@@ -16,4 +16,12 @@ nltk.download('stopwords', quiet=True)
 
 class ExtractiveSummarizer:
     """ Advanced Extractive Summarizer using multiple algorithms. """
-    
+
+    def __int__(self, language: str = 'english'):
+        """ Initialize the summarizer with a specified language.
+        Args:
+            language (str): Language for stopwords and tokenization.
+        """
+        
+        self.language = language
+        self.stopwords = set(nltk.corpus.stopwords.words(language))
