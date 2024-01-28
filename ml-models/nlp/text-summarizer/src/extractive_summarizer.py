@@ -13,3 +13,7 @@ import re
 
 nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
+
+class ExtractiveSummarizer:
+    """ Advanced Extractive Summarizer using multiple algorithms. """
+    
