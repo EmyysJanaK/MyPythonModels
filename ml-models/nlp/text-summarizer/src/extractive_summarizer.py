@@ -22,6 +22,15 @@ class ExtractiveSummarizer:
         Args:
             language (str): Language for stopwords and tokenization.
         """
-        
+
         self.language = language
         self.stopwords = set(nltk.corpus.stopwords.words(language))
+
+    def preprocess_text(self, text: str) -> str:
+        """ Preprocess the input text by removing special characters and extra spaces.
+        Args:
+            text (str): Input text to preprocess.
+        Returns:
+            str: Cleaned text.
+        """
+        text = re.sub(r'\s+', ' ', text.strip())
