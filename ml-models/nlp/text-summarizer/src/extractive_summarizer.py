@@ -33,10 +33,12 @@ class ExtractiveSummarizer:
         Returns:
             str: Cleaned text.
         """
-        
+
         text = re.sub(r'\s+', ' ', text.strip())
 
         #Remove URLs, emails, and special characters
         text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
         text = re.sub(r'\S*@\S*\s?', '', text)
         text = re.sub(r'[^\w\s\.\!\?\;\:]', ' ', text)
+
+        return text
