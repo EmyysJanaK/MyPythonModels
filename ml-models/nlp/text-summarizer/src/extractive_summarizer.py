@@ -42,3 +42,9 @@ class ExtractiveSummarizer:
         text = re.sub(r'[^\w\s\.\!\?\;\:]', ' ', text)
 
         return text
+    
+    def extract_sentences(self, text: str) -> List[str]:
+        """Extract sentences from text using NLTK."""
+
+        sentences = nltk.sent_tokenize(text)
+        return [s.strip() for s in sentences if len(s.strip()) > 10]
