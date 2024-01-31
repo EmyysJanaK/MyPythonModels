@@ -48,3 +48,10 @@ class ExtractiveSummarizer:
 
         sentences = nltk.sent_tokenize(text)
         return [s.strip() for s in sentences if len(s.strip()) > 10]
+
+    def calculate_sentences(self, text: str) -> List[str]:
+        """Calculate sentences from the text."""
+        
+        text = self.preprocess_text(text)
+        sentences = self.extract_sentences(text)
+        return sentences
