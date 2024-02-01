@@ -68,3 +68,18 @@ class ExtractiveSummarizer:
         # Normalize frequencies
         max_freq = max(word_freq.values()) if word_freq else 1
         return {word: freq / max_freq for word, freq in word_freq.items()}
+
+    def score_sentences_frequency(self, sentences: List[str], word_freq: Dict[str, float]) -> List[float]:
+        """Score sentences based on word frequency."""
+        scores = []
+        
+        for sentence in sentences:
+            words = nltk.word_tokenize(sentence.lower())
+            words = [word for word in words if word.isalnum() and word not in self.stopwords]
+            
+            if not words:
+                scores.append(0.0)
+                continue
+                
+            sentence_score = sum(word_freq.get(word, 0) for word in words) / len(words)
+            scores.append(sentence_score)
