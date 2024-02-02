@@ -339,3 +339,27 @@ class AbstractiveSummarizer:
             summary = self.summarize(text, max_length, min_length, summary_style, **kwargs)
             summaries.append(summary)
         return summaries
+    
+    def compare_models(self, text: str, models: List[str] = None) -> Dict[str, str]:
+        """Compare summaries from different models."""
+        if models is None:
+            models = ['bart-large-cnn', 't5-base']
+        
+        results = {}
+        original_model = self.model_name
+        
+        for model_name in models:
+            if model_name in self.MODELS:
+                print(f"Testing {model_name}...")
+                try:
+                    # Temporarily switch model
+                    self.model_name = model_name
+                    self.model_config = self.MODELS[model_name]
+                    self._load_model()
+                    
+                    # Generate summary
+                    summary = self.summarize(text)
+                    results[model_name] = summary
+                    
+                except Exception as e:
+                    results[model_name] = f"Error: {str(e)}"
