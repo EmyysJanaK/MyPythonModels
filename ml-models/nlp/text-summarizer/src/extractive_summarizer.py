@@ -84,3 +84,8 @@ class ExtractiveSummarizer:
             sentence_score = sum(word_freq.get(word, 0) for word in words) / len(words)
             scores.append(sentence_score)
         return scores
+
+     def score_sentences_tfidf(self, sentences: List[str]) -> List[float]:
+        """Score sentences using TF-IDF."""
+        if len(sentences) < 2:
+            return [1.0] * len(sentences)
