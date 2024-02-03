@@ -96,3 +96,11 @@ class ExtractiveSummarizer:
                 max_features=1000,
                 ngram_range=(1, 2)
             )
+            tfidf_matrix = vectorizer.fit_transform(sentences)
+            sentence_scores = np.array(tfidf_matrix.sum(axis=1)).flatten()
+            
+            # Normalize scores
+            if sentence_scores.max() != 0:
+                sentence_scores = sentence_scores / sentence_scores.max()
+                
+            return sentence_scores.tolist()
