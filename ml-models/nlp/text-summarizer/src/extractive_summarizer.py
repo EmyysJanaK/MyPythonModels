@@ -89,3 +89,10 @@ class ExtractiveSummarizer:
         """Score sentences using TF-IDF."""
         if len(sentences) < 2:
             return [1.0] * len(sentences)
+        try:
+            vectorizer = TfidfVectorizer(
+                stop_words='english',
+                lowercase=True,
+                max_features=1000,
+                ngram_range=(1, 2)
+            )
