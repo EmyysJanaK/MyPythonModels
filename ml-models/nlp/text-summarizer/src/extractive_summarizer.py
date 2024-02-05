@@ -109,3 +109,23 @@ class ExtractiveSummarizer:
             # Fallback to frequency-based scoring
             word_freq = self.calculate_word_frequencies(sentences)
             return self.score_sentences_frequency(sentences, word_freq)
+    
+    def score_sentences_position(self, sentences: List[str]) -> List[float]:
+        """Score sentences based on position (first and last sentences get higher scores)."""
+        n = len(sentences)
+        if n <= 2:
+            return [1.0] * n
+            
+        scores = []
+        for i in range(n):
+            if i < 2:  # First two sentences
+                score = 1.0
+            elif i >= n - 2:  # Last two sentences
+                score = 0.8
+            elif i < n * 0.3:  # First third
+                score = 0.6
+            else:  # Middle sentences
+                score = 0.3
+            scores.append(score)
+            
+        return scores
