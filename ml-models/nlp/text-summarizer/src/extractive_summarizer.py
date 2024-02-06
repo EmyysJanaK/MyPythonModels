@@ -129,3 +129,22 @@ class ExtractiveSummarizer:
             scores.append(score)
             
         return scores
+
+    def score_sentences_length(self, sentences: List[str]) -> List[float]:
+        """Score sentences based on length (prefer medium-length sentences)."""
+        lengths = [len(nltk.word_tokenize(s)) for s in sentences]
+        avg_length = np.mean(lengths)
+        
+        scores = []
+        for length in lengths:
+            if 10 <= length <= 25:  # Optimal range
+                score = 1.0
+            elif 5 <= length <= 35:  # Good range
+                score = 0.8
+            elif length < 5:  # Too short
+                score = 0.3
+            else:  # Too long
+                score = 0.6
+            scores.append(score)
+            
+        return scores
