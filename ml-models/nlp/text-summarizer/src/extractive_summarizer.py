@@ -148,3 +148,44 @@ class ExtractiveSummarizer:
             scores.append(score)
             
         return scores
+    
+    def textrank_algorithm(self, sentences: List[str], similarity_threshold: float = 0.1) -> List[float]:
+        """Implement TextRank algorithm for sentence ranking."""
+        if len(sentences) < 2:
+            return [1.0] * len(sentences)
+            
+        try:
+            # Create TF-IDF vectors
+            vectorizer = TfidfVectorizer(stop_words='english', lowercase=True)
+            tfidf_matrix = vectorizer.fit_transform(sentences)
+            
+            # Calculate similarity matrix
+            similarity_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
+            
+            # Apply threshold
+            similarity_matrix[similarity_matrix < similarity_threshold] = 0
+            
+            # Normalize the matrix
+            for i in range(len(similarity_matrix)):
+                if similarity_matrix[i].sum() != 0:
+                    similarity_matrix[i] = similarity_matrix[i] / similarity_matrix[i].sum()
+            
+            # PageRank algorithm
+            scores = np.ones(len(sentences))
+            damping = 0.85
+            
+            for _ in range(50):  # iterations
+                new_scores = (1 - damping) + damping * similarity_matrix.T.dot(scores)
+                if np.allclose(scores, new_scores, atol=1e-6):
+                    break
+                scores = new_scores
+            
+            # Normalize scores
+            if scores.max() != 0:
+                scores = scores / scores.max()
+                
+            return scores.tolist()
+            
+        except Exception:
+            # Fallback to TF-IDF scoring
+            return self.score_sentences_tfidf(sentences)
