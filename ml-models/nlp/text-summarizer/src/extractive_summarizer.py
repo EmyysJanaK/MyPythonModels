@@ -203,3 +203,76 @@ class ExtractiveSummarizer:
             combined_scores.append(weighted_score)
             
         return combined_scores
+    
+    def summarize(self, 
+                  text: str, 
+                  summary_ratio: float = 0.3,
+                  max_sentences: Optional[int] = None,
+                  min_sentences: int = 2,
+                  algorithm: str = 'hybrid') -> str:
+        """
+        Generate extractive summary.
+        
+        Args:
+            text: Input text to summarize
+            summary_ratio: Ratio of sentences to keep (0.1 to 0.8)
+            max_sentences: Maximum number of sentences in summary
+            min_sentences: Minimum number of sentences in summary
+            algorithm: 'frequency', 'tfidf', 'textrank', or 'hybrid'
+            
+        Returns:
+            Summarized text
+        """
+        # Preprocess and extract sentences
+        clean_text = self.preprocess_text(text)
+        sentences = self.extract_sentences(clean_text)
+        
+        if len(sentences) <= min_sentences:
+            return ' '.join(sentences)
+        
+        # Calculate number of sentences for summary
+        num_sentences = max(
+            min_sentences,
+            min(
+                int(len(sentences) * summary_ratio),
+                max_sentences if max_sentences else len(sentences)
+            )
+        )
+        
+        # Score sentences based on algorithm
+        if algorithm == 'frequency':
+            word_freq = self.calculate_word_frequencies(sentences)
+            scores = self.score_sentences_frequency(sentences, word_freq)
+        elif algorithm == 'tfidf':
+            scores = self.score_sentences_tfidf(sentences)
+        elif algorithm == 'textrank':
+            scores = self.textrank_algorithm(sentences)
+        else:  # hybrid
+            freq_scores = self.score_sentences_frequency(
+                sentences, 
+                self.calculate_word_frequencies(sentences)
+            )
+            tfidf_scores = self.score_sentences_tfidf(sentences)
+            textrank_scores = self.textrank_algorithm(sentences)
+            position_scores = self.score_sentences_position(sentences)
+            length_scores = self.score_sentences_length(sentences)
+            
+            # Combine with weights
+            scores = self.combine_scores(
+                [freq_scores, tfidf_scores, textrank_scores, position_scores, length_scores],
+                [0.2, 0.3, 0.3, 0.15, 0.05]  # Weights for each method
+            )
+        
+        # Select top sentences
+        sentence_indices = sorted(
+            range(len(scores)), 
+            key=lambda i: scores[i], 
+            reverse=True
+        )[:num_sentences]
+        
+        # Sort selected sentences by original order
+        sentence_indices.sort()
+        
+        # Generate summary
+        summary_sentences = [sentences[i] for i in sentence_indices]
+        return ' '.join(summary_sentences)
