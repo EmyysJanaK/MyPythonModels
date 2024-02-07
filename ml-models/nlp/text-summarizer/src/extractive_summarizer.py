@@ -247,7 +247,7 @@ class ExtractiveSummarizer:
             scores = self.score_sentences_tfidf(sentences)
         elif algorithm == 'textrank':
             scores = self.textrank_algorithm(sentences)
-        else:  # hybrid
+        else:  
             freq_scores = self.score_sentences_frequency(
                 sentences, 
                 self.calculate_word_frequencies(sentences)
