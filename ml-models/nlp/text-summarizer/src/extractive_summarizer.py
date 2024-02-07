@@ -189,3 +189,17 @@ class ExtractiveSummarizer:
         except Exception:
             # Fallback to TF-IDF scoring
             return self.score_sentences_tfidf(sentences)
+    
+    def combine_scores(self, score_lists: List[List[float]], weights: List[float]) -> List[float]:
+        """Combine multiple scoring methods with weights."""
+        combined_scores = []
+        n_sentences = len(score_lists[0])
+        
+        for i in range(n_sentences):
+            weighted_score = sum(
+                scores[i] * weight 
+                for scores, weight in zip(score_lists, weights)
+            )
+            combined_scores.append(weighted_score)
+            
+        return combined_scores
