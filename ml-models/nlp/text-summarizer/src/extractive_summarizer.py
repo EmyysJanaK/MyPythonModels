@@ -257,7 +257,6 @@ class ExtractiveSummarizer:
             position_scores = self.score_sentences_position(sentences)
             length_scores = self.score_sentences_length(sentences)
             
-            # Combine with weights
             scores = self.combine_scores(
                 [freq_scores, tfidf_scores, textrank_scores, position_scores, length_scores],
                 [0.2, 0.3, 0.3, 0.15, 0.05]  
