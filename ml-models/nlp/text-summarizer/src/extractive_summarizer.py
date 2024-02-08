@@ -260,10 +260,10 @@ class ExtractiveSummarizer:
             # Combine with weights
             scores = self.combine_scores(
                 [freq_scores, tfidf_scores, textrank_scores, position_scores, length_scores],
-                [0.2, 0.3, 0.3, 0.15, 0.05]  # Weights for each method
+                [0.2, 0.3, 0.3, 0.15, 0.05]  
             )
         
-        # Select top sentences
+    
         sentence_indices = sorted(
             range(len(scores)), 
             key=lambda i: scores[i], 
