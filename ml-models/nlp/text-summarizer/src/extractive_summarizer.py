@@ -230,7 +230,6 @@ class ExtractiveSummarizer:
         if len(sentences) <= min_sentences:
             return ' '.join(sentences)
         
-       
         num_sentences = max(
             min_sentences,
             min(
