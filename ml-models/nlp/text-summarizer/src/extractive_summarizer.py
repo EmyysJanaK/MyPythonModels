@@ -274,3 +274,39 @@ class ExtractiveSummarizer:
         # Generate summary
         summary_sentences = [sentences[i] for i in sentence_indices]
         return ' '.join(summary_sentences)
+
+def get_sentence_scores(self, text: str, algorithm: str = 'hybrid') -> List[Tuple[str, float]]:
+        """
+        Get sentences with their scores for analysis.
+        
+        Returns:
+            List of (sentence, score) tuples
+        """
+        clean_text = self.preprocess_text(text)
+        sentences = self.extract_sentences(clean_text)
+        
+        if algorithm == 'hybrid':
+            freq_scores = self.score_sentences_frequency(
+                sentences, 
+                self.calculate_word_frequencies(sentences)
+            )
+            tfidf_scores = self.score_sentences_tfidf(sentences)
+            textrank_scores = self.textrank_algorithm(sentences)
+            position_scores = self.score_sentences_position(sentences)
+            length_scores = self.score_sentences_length(sentences)
+            
+            scores = self.combine_scores(
+                [freq_scores, tfidf_scores, textrank_scores, position_scores, length_scores],
+                [0.2, 0.3, 0.3, 0.15, 0.05]
+            )
+        else:
+            # Single algorithm scoring
+            if algorithm == 'frequency':
+                word_freq = self.calculate_word_frequencies(sentences)
+                scores = self.score_sentences_frequency(sentences, word_freq)
+            elif algorithm == 'tfidf':
+                scores = self.score_sentences_tfidf(sentences)
+            elif algorithm == 'textrank':
+                scores = self.textrank_algorithm(sentences)
+        
+        return list(zip(sentences, scores))
