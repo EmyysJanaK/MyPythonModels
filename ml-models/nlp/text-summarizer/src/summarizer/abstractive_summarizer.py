@@ -3,6 +3,12 @@ Abstractive Text Summarizer using transformer models.
 Supports multiple pre-trained models and custom fine-tuning.
 """
 
+
+import logging
+from typing import List, Dict, Optional, Union
+import re
+import warnings
+
 class AbstractiveSummarizer:
     """Advanced abstractive text summarizer using transformer models."""
     
