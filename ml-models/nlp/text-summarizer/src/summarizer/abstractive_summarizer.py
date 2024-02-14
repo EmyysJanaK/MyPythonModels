@@ -3,7 +3,14 @@ Abstractive Text Summarizer using transformer models.
 Supports multiple pre-trained models and custom fine-tuning.
 """
 
-
+import torch
+from transformers import (
+    AutoTokenizer, AutoModelForSeq2SeqLM,
+    T5Tokenizer, T5ForConditionalGeneration,
+    BartTokenizer, BartForConditionalGeneration,
+    PegasusTokenizer, PegasusForConditionalGeneration,
+    pipeline
+)
 import logging
 from typing import List, Dict, Optional, Union
 import re
