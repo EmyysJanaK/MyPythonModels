@@ -52,3 +52,19 @@ class AbstractiveSummarizer:
             'description': 'Pegasus model trained on CNN/DailyMail'
         }
     }
+
+    def __init__(self, 
+                 model_name: str = 'bart-large-cnn',
+                 device: Optional[str] = None,
+                 use_pipeline: bool = True):
+        """
+        Initialize the abstractive summarizer.
+        
+        Args:
+            model_name: Name of the model to use
+            device: Device to run the model on ('cpu', 'cuda', or None for auto)
+            use_pipeline: Whether to use HuggingFace pipeline (easier) or raw models
+        """
+        self.model_name = model_name
+        self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
+        self.use_pipeline = use_pipeline
