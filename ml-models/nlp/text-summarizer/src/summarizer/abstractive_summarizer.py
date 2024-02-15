@@ -79,7 +79,7 @@ class AbstractiveSummarizer:
         
         self._load_model()
 
-     def _load_model(self):
+    def _load_model(self):
         """Load the model and tokenizer."""
         try:
             print(f"Loading {self.model_name} model...")
