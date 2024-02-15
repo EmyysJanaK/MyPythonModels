@@ -68,3 +68,13 @@ class AbstractiveSummarizer:
         self.model_name = model_name
         self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
         self.use_pipeline = use_pipeline
+
+        if model_name not in self.MODELS:
+            raise ValueError(f"Model {model_name} not supported. Available: {list(self.MODELS.keys())}")
+        
+        self.model_config = self.MODELS[model_name]
+        self.tokenizer = None
+        self.model = None
+        self.pipeline = None
+        
+        self._load_model()
