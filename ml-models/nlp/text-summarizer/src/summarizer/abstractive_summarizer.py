@@ -78,3 +78,17 @@ class AbstractiveSummarizer:
         self.pipeline = None
         
         self._load_model()
+
+     def _load_model(self):
+        """Load the model and tokenizer."""
+        try:
+            print(f"Loading {self.model_name} model...")
+            
+            if self.use_pipeline:
+                # Use HuggingFace pipeline (simpler)
+                self.pipeline = pipeline(
+                    "summarization",
+                    model=f"facebook/{self.model_name}" if 'bart' in self.model_name else self.model_name,
+                    device=0 if self.device == 'cuda' else -1,
+                    framework="pt"
+                )
