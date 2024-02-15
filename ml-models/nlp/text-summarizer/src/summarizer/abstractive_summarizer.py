@@ -92,3 +92,19 @@ class AbstractiveSummarizer:
                     device=0 if self.device == 'cuda' else -1,
                     framework="pt"
                 )
+            else:
+                # Load model and tokenizer separately
+                model_path = f"facebook/{self.model_name}" if 'bart' in self.model_name else self.model_name
+                
+                self.tokenizer = self.model_config['tokenizer'].from_pretrained(model_path)
+                self.model = self.model_config['model'].from_pretrained(model_path)
+                
+                if self.device == 'cuda' and torch.cuda.is_available():
+                    self.model = self.model.cuda()
+                
+            print(f"Model {self.model_name} loaded successfully on {self.device}")
+            
+        except Exception as e:
+            print(f"Error loading model: {e}")
+            print("Falling back to default summarization pipeline...")
+            self.pipeline = pipeline("summarization", device=0 if self.device == 'cuda' else -1)
