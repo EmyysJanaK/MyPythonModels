@@ -108,3 +108,15 @@ class AbstractiveSummarizer:
             print(f"Error loading model: {e}")
             print("Falling back to default summarization pipeline...")
             self.pipeline = pipeline("summarization", device=0 if self.device == 'cuda' else -1)
+        
+    def preprocess_text(self, text: str) -> str:
+        """Preprocess text for summarization."""
+        # Clean up text
+        text = re.sub(r'\s+', ' ', text.strip())
+        text = re.sub(r'[^\w\s\.\!\?\;\:\,\-\(\)]', ' ', text)
+        
+        # Add special tokens for T5 models
+        if 't5' in self.model_name.lower():
+            text = f"summarize: {text}"
+        
+        return text
