@@ -131,3 +131,28 @@ class AbstractiveSummarizer:
             chunks.append(chunk)
             
         return chunks
+    
+    def summarize_with_pipeline(self, 
+                              text: str,
+                              max_length: int = 150,
+                              min_length: int = 30,
+                              do_sample: bool = False,
+                              temperature: float = 1.0,
+                              top_p: float = 1.0) -> str:
+        """Summarize using HuggingFace pipeline."""
+        try:
+            result = self.pipeline(
+                text,
+                max_length=max_length,
+                min_length=min_length,
+                do_sample=do_sample,
+                temperature=temperature,
+                top_p=top_p,
+                truncation=True
+            )
+            
+            return result[0]['summary_text']
+            
+        except Exception as e:
+            print(f"Error in pipeline summarization: {e}")
+            return self._fallback_summary(text, max_length)
