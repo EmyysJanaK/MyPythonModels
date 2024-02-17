@@ -120,3 +120,14 @@ class AbstractiveSummarizer:
             text = f"summarize: {text}"
         
         return text
+    
+    def chunk_text(self, text: str, max_length: int, overlap: int = 50) -> List[str]:
+        """Split text into chunks that fit model's max input length."""
+        words = text.split()
+        chunks = []
+        
+        for i in range(0, len(words), max_length - overlap):
+            chunk = ' '.join(words[i:i + max_length])
+            chunks.append(chunk)
+            
+        return chunks
