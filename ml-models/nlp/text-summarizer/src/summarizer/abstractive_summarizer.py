@@ -156,3 +156,23 @@ class AbstractiveSummarizer:
         except Exception as e:
             print(f"Error in pipeline summarization: {e}")
             return self._fallback_summary(text, max_length)
+
+    def summarize_with_model(self,
+                           text: str,
+                           max_length: int = 150,
+                           min_length: int = 30,
+                           num_beams: int = 4,
+                           length_penalty: float = 2.0,
+                           early_stopping: bool = True,
+                           do_sample: bool = False,
+                           temperature: float = 1.0,
+                           top_p: float = 1.0) -> str:
+        """Summarize using raw model (more control over parameters)."""
+        try:
+            # Tokenize input
+            inputs = self.tokenizer.encode(
+                text,
+                return_tensors="pt",
+                max_length=self.model_config['max_input'],
+                truncation=True
+            )
