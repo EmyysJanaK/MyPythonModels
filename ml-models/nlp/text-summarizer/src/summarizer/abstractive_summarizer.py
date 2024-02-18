@@ -176,3 +176,33 @@ class AbstractiveSummarizer:
                 max_length=self.model_config['max_input'],
                 truncation=True
             )
+            if self.device == 'cuda':
+                inputs = inputs.cuda()
+            
+            # Generate summary
+            with torch.no_grad():
+                summary_ids = self.model.generate(
+                    inputs,
+                    max_length=max_length,
+                    min_length=min_length,
+                    num_beams=num_beams,
+                    length_penalty=length_penalty,
+                    early_stopping=early_stopping,
+                    do_sample=do_sample,
+                    temperature=temperature if do_sample else 1.0,
+                    top_p=top_p if do_sample else 1.0,
+                    pad_token_id=self.tokenizer.eos_token_id
+                )
+            
+            # Decode summary
+            summary = self.tokenizer.decode(
+                summary_ids[0],
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=True
+            )
+            
+            return summary
+        
+        except Exception as e:
+            print(f"Error in model summarization: {e}")
+            return self._fallback_summary(text, max_length)
