@@ -210,12 +210,12 @@ class AbstractiveSummarizer:
     def _fallback_summary(self, text: str, max_length: int) -> str:
         """Simple extractive fallback when models fail."""
 
-            sentences = text.split('. ')
-            if len(sentences) <= 3:
-                return text
+        sentences = text.split('. ')
+        if len(sentences) <= 3:
+            return text
             
-            # Return first few sentences as fallback
-            words_count = 0
-            summary_sentences = []
+        # Return first few sentences as fallback
+        words_count = 0
+        summary_sentences = []
             
-            return 0   
+        return 0   
