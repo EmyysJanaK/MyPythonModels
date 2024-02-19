@@ -206,3 +206,16 @@ class AbstractiveSummarizer:
         except Exception as e:
             print(f"Error in model summarization: {e}")
             return self._fallback_summary(text, max_length)
+
+    def _fallback_summary(self, text: str, max_length: int) -> str:
+        """Simple extractive fallback when models fail."""
+
+            sentences = text.split('. ')
+            if len(sentences) <= 3:
+                return text
+            
+            # Return first few sentences as fallback
+            words_count = 0
+            summary_sentences = []
+            
+            return 0   
