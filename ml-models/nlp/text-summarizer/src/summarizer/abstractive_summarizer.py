@@ -226,3 +226,25 @@ class AbstractiveSummarizer:
                 break
         
         return '. '.join(summary_sentences) + '.'   
+    
+    def summarize(self,
+                  text: str,
+                  max_length: int = 150,
+                  min_length: int = 30,
+                  summary_style: str = 'balanced',
+                  **kwargs) -> str:
+        """
+        Generate abstractive summary with customizable parameters.
+        
+        Args:
+            text: Input text to summarize
+            max_length: Maximum length of summary
+            min_length: Minimum length of summary
+            summary_style: 'factual', 'balanced', or 'creative'
+            **kwargs: Additional parameters for generation
+            
+        Returns:
+            Generated summary
+        """
+        # Preprocess text
+        clean_text = self.preprocess_text(text)
