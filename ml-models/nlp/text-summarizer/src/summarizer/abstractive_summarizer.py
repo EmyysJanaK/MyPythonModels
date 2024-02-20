@@ -218,4 +218,11 @@ class AbstractiveSummarizer:
         words_count = 0
         summary_sentences = []
             
-        return 0   
+        for sentence in sentences:
+            words_count += len(sentence.split())
+            summary_sentences.append(sentence)
+            
+            if words_count >= max_length * 0.7:  # Approximate word count
+                break
+        
+        return '. '.join(summary_sentences) + '.'   
