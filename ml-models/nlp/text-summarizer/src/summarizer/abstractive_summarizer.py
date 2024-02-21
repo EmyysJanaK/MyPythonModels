@@ -248,3 +248,9 @@ class AbstractiveSummarizer:
         """
         # Preprocess text
         clean_text = self.preprocess_text(text)
+
+        # Handle long texts by chunking
+        max_input = self.model_config['max_input']
+        if len(clean_text.split()) > max_input:
+            chunks = self.chunk_text(clean_text, max_input - 100)  # Leave room for special tokens
+            summaries = []
