@@ -254,3 +254,20 @@ class AbstractiveSummarizer:
         if len(clean_text.split()) > max_input:
             chunks = self.chunk_text(clean_text, max_input - 100)  # Leave room for special tokens
             summaries = []
+
+            for chunk in chunks:
+                if self.use_pipeline:
+                    chunk_summary = self.summarize_with_pipeline(
+                        chunk, 
+                        max_length=max_length // len(chunks) + 50,
+                        min_length=min_length // len(chunks),
+                        **kwargs
+                    )
+                else:
+                    chunk_summary = self.summarize_with_model(
+                        chunk,
+                        max_length=max_length // len(chunks) + 50,
+                        min_length=min_length // len(chunks),
+                        **kwargs
+                    )
+                summaries.append(chunk_summary)
