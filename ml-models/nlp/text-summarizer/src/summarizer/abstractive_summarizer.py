@@ -271,3 +271,12 @@ class AbstractiveSummarizer:
                         **kwargs
                     )
                 summaries.append(chunk_summary)
+            
+             # Combine chunk summaries
+            combined_summary = ' '.join(summaries)
+            
+            # Summarize the combined summary if it's still too long
+            if len(combined_summary.split()) > max_length:
+                return self.summarize(combined_summary, max_length, min_length, summary_style, **kwargs)
+            
+            return combined_summary
