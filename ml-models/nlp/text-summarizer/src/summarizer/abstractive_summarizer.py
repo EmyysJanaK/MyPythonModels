@@ -280,3 +280,13 @@ class AbstractiveSummarizer:
                 return self.summarize(combined_summary, max_length, min_length, summary_style, **kwargs)
             
             return combined_summary
+        
+        # Set parameters based on style
+        style_params = self._get_style_parameters(summary_style)
+        kwargs.update(style_params)
+        
+        # Generate summary
+        if self.use_pipeline:
+            return self.summarize_with_pipeline(clean_text, max_length, min_length, **kwargs)
+        else:
+            return self.summarize_with_model(clean_text, max_length, min_length, **kwargs)
