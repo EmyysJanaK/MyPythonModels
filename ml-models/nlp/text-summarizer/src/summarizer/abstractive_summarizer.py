@@ -290,3 +290,52 @@ class AbstractiveSummarizer:
             return self.summarize_with_pipeline(clean_text, max_length, min_length, **kwargs)
         else:
             return self.summarize_with_model(clean_text, max_length, min_length, **kwargs)
+    
+    def _get_style_parameters(self, style: str) -> Dict:
+        """Get generation parameters based on summary style."""
+        if style == 'factual':
+            return {
+                'do_sample': False,
+                'num_beams': 5,
+                'length_penalty': 2.0,
+                'early_stopping': True
+            }
+        elif style == 'creative':
+            return {
+                'do_sample': True,
+                'temperature': 1.2,
+                'top_p': 0.9,
+                'num_beams': 1,
+                'length_penalty': 1.0
+            }
+        else:  # balanced
+            return {
+                'do_sample': False,
+                'num_beams': 4,
+                'length_penalty': 2.0,
+                'early_stopping': True
+            }
+    def summarize_batch(self,
+                       texts: List[str],
+                       max_length: int = 150,
+                       min_length: int = 30,
+                       summary_style: str = 'balanced',
+                       **kwargs) -> List[str]:
+        """
+        Generate summaries for a batch of texts.
+        
+        Args:
+            texts: List of input texts to summarize
+            max_length: Maximum length of each summary
+            min_length: Minimum length of each summary
+            summary_style: 'factual', 'balanced', or 'creative'
+            **kwargs: Additional parameters for generation
+            
+        Returns:
+            List of generated summaries
+        """
+        summaries = []
+        for text in texts:
+            summary = self.summarize(text, max_length, min_length, summary_style, **kwargs)
+            summaries.append(summary)
+        return summaries
