@@ -363,3 +363,9 @@ class AbstractiveSummarizer:
                     
                 except Exception as e:
                     results[model_name] = f"Error: {str(e)}"
+        # Restore original model
+            self.model_name = original_model
+            self.model_config = self.MODELS[original_model]
+            self._load_model()
+            
+            return results
