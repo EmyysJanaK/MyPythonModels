@@ -369,3 +369,18 @@ class AbstractiveSummarizer:
             self._load_model()
             
             return results
+    
+    @staticmethod
+    def list_available_models() -> Dict[str, str]:
+        """List all available models with descriptions."""
+        return {name: config['description'] for name, config in AbstractiveSummarizer.MODELS.items()}
+    
+    def get_model_info(self) -> Dict:
+        """Get information about the current model."""
+        return {
+            'model_name': self.model_name,
+            'device': self.device,
+            'max_input_length': self.model_config['max_input'],
+            'description': self.model_config['description'],
+            'use_pipeline': self.use_pipeline
+        }
