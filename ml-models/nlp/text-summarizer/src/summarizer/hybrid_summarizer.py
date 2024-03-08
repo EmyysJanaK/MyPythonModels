@@ -198,3 +198,60 @@ class HybridSummarizer:
             'reasoning': reasoning,
             'summaries': {}
         }
+        # Generate summaries based on approach
+        if recommended_approach == 'extractive' or not self.enable_abstractive:
+            extractive_summary = self.extractive.summarize(
+                text, 
+                summary_ratio=summary_ratio,
+                algorithm=extractive_algorithm
+            )
+            results['summaries']['extractive'] = extractive_summary
+            results['final_summary'] = extractive_summary
+            results['method_used'] = 'extractive'
+            
+        elif recommended_approach == 'abstractive':
+            abstractive_summary = self.abstractive.summarize(
+                text,
+                max_length=max_length,
+                min_length=min_length,
+                summary_style=abstractive_style,
+                **kwargs
+            )
+            results['summaries']['abstractive'] = abstractive_summary
+            results['final_summary'] = abstractive_summary
+            results['method_used'] = 'abstractive'
+            
+        else:  # hybrid approach
+            # Generate both summaries
+            extractive_summary = self.extractive.summarize(
+                text,
+                summary_ratio=summary_ratio,
+                algorithm=extractive_algorithm
+            )
+            
+            if self.enable_abstractive:
+                abstractive_summary = self.abstractive.summarize(
+                    text,
+                    max_length=max_length,
+                    min_length=min_length,
+                    summary_style=abstractive_style,
+                    **kwargs
+                )
+            else:
+                abstractive_summary = extractive_summary
+            
+            results['summaries']['extractive'] = extractive_summary
+            results['summaries']['abstractive'] = abstractive_summary
+            
+            # Combine summaries
+            combined_summary = self._combine_summaries(
+                extractive_summary,
+                abstractive_summary,
+                method=combine_method,
+                analysis=analysis
+            )
+            
+            results['final_summary'] = combined_summary
+            results['method_used'] = 'hybrid'
+        
+        return results
