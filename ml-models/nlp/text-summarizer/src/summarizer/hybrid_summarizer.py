@@ -83,3 +83,73 @@ class HybridSummarizer:
         }
         
         return analysis
+    def recommend_approach(self, text_analysis: Dict) -> Tuple[str, float, str]:
+        """
+        Recommend the best summarization approach based on text analysis.
+        
+        Returns:
+            Tuple of (approach, confidence, reasoning)
+        """
+        if not self.enable_abstractive:
+            return 'extractive', 1.0, 'Abstractive summarization not available'
+        
+        score_extractive = 0
+        score_abstractive = 0
+        reasons = []
+        
+        # Length-based scoring
+        word_count = text_analysis['word_count']
+        if word_count < 200:
+            score_extractive += 2
+            reasons.append("Short text favors extractive")
+        elif word_count > 1000:
+            score_abstractive += 1
+            reasons.append("Long text benefits from abstractive")
+        
+        # Readability scoring
+        flesch_score = text_analysis['flesch_reading_ease']
+        if flesch_score < 30:  # Very difficult
+            score_abstractive += 2
+            reasons.append("Complex text benefits from abstractive rephrasing")
+        elif flesch_score > 70:  # Easy
+            score_extractive += 1
+            reasons.append("Simple text works well with extractive")
+        
+        # Structure scoring
+        if text_analysis['has_headings'] or text_analysis['has_bullet_points']:
+            score_extractive += 1
+            reasons.append("Structured text suits extractive approach")
+        
+        # Content type scoring
+        if text_analysis['question_ratio'] > 0.1:
+            score_extractive += 1
+            reasons.append("Question-heavy text suits extractive")
+        
+        # Technical content indicators
+        if text_analysis['has_numbers'] and text_analysis['difficult_words'] > word_count * 0.1:
+            score_extractive += 1
+            reasons.append("Technical content with numbers favors extractive")
+        
+        # Sentence complexity
+        avg_sentence_length = text_analysis['avg_sentence_length']
+        if avg_sentence_length > 20:
+            score_abstractive += 1
+            reasons.append("Long sentences benefit from abstractive simplification")
+        elif avg_sentence_length < 10:
+            score_extractive += 1
+            reasons.append("Short sentences work well with extractive")
+        
+        # Make recommendation
+        if score_abstractive > score_extractive:
+            approach = 'abstractive'
+            confidence = min(0.9, 0.5 + (score_abstractive - score_extractive) * 0.1)
+        elif score_extractive > score_abstractive:
+            approach = 'extractive' 
+            confidence = min(0.9, 0.5 + (score_extractive - score_abstractive) * 0.1)
+        else:
+            approach = 'hybrid'
+            confidence = 0.6
+            reasons.append("Mixed indicators suggest hybrid approach")
+        
+        reasoning = "; ".join(reasons)
+        return approach, confidence, reasoning
