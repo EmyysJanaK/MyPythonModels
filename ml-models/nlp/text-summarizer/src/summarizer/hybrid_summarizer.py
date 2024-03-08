@@ -153,3 +153,48 @@ class HybridSummarizer:
         
         reasoning = "; ".join(reasons)
         return approach, confidence, reasoning
+    
+    def summarize(self,
+                  text: str,
+                  approach: str = 'auto',
+                  summary_ratio: float = 0.3,
+                  max_length: int = 150,
+                  min_length: int = 30,
+                  extractive_algorithm: str = 'hybrid',
+                  abstractive_style: str = 'balanced',
+                  combine_method: str = 'weighted',
+                  **kwargs) -> Dict[str, Union[str, Dict]]:
+        """
+        Generate summary using hybrid approach.
+        
+        Args:
+            text: Input text
+            approach: 'auto', 'extractive', 'abstractive', or 'hybrid'
+            summary_ratio: Ratio for extractive summarization
+            max_length: Max length for abstractive summarization
+            min_length: Min length for abstractive summarization
+            extractive_algorithm: Algorithm for extractive summarization
+            abstractive_style: Style for abstractive summarization
+            combine_method: How to combine approaches ('weighted', 'best', 'concatenate')
+            
+        Returns:
+            Dictionary with summary and metadata
+        """
+        # Analyze text
+        analysis = self.analyze_text_characteristics(text)
+        
+        # Determine approach
+        if approach == 'auto':
+            recommended_approach, confidence, reasoning = self.recommend_approach(analysis)
+        else:
+            recommended_approach = approach
+            confidence = 1.0
+            reasoning = f"User specified {approach} approach"
+        
+        results = {
+            'analysis': analysis,
+            'recommended_approach': recommended_approach,
+            'confidence': confidence,
+            'reasoning': reasoning,
+            'summaries': {}
+        }
