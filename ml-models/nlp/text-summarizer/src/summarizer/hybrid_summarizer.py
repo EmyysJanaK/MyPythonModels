@@ -301,3 +301,25 @@ class HybridSummarizer:
             combined_sentences.extend(abs_sentences[:num_abs])
             
             return ' '.join(combined_sentences)
+    
+    def compare_approaches(self, text: str, **kwargs) -> Dict[str, str]:
+        """Compare all available summarization approaches."""
+        results = {}
+        
+        # Extractive summary
+        results['extractive'] = self.extractive.summarize(text, **kwargs)
+        
+        # Abstractive summary (if available)
+        if self.enable_abstractive:
+            try:
+                results['abstractive'] = self.abstractive.summarize(text, **kwargs)
+            except Exception as e:
+                results['abstractive'] = f"Error: {str(e)}"
+        else:
+            results['abstractive'] = "Not available"
+        
+        # Hybrid summary
+        hybrid_result = self.summarize(text, approach='hybrid', **kwargs)
+        results['hybrid'] = hybrid_result.get('final_summary', 'Error in hybrid summarization')
+        
+        return results
