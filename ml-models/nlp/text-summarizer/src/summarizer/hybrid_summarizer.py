@@ -255,3 +255,49 @@ class HybridSummarizer:
             results['method_used'] = 'hybrid'
         
         return results
+    
+    def _combine_summaries(self, 
+                          extractive: str, 
+                          abstractive: str,
+                          method: str = 'weighted',
+                          analysis: Dict = None) -> str:
+        """Combine extractive and abstractive summaries."""
+        
+        if method == 'best':
+            # Choose the better summary based on length and coherence
+            ext_sentences = len(nltk.sent_tokenize(extractive))
+            abs_sentences = len(nltk.sent_tokenize(abstractive))
+            
+            # Prefer summary with better sentence structure
+            if abs_sentences > 0 and len(abstractive) > len(extractive) * 0.7:
+                return abstractive
+            else:
+                return extractive
+                
+        elif method == 'concatenate':
+            # Simple concatenation with transition
+            return f"{extractive} Additionally, {abstractive.lower()}"
+            
+        else:  # weighted combination
+            # Create a hybrid by selecting sentences from both
+            ext_sentences = nltk.sent_tokenize(extractive)
+            abs_sentences = nltk.sent_tokenize(abstractive)
+            
+            # Weight based on text characteristics
+            if analysis and analysis.get('word_count', 0) > 500:
+                # For longer texts, prefer abstractive
+                weight_abs = 0.7
+            else:
+                # For shorter texts, prefer extractive
+                weight_abs = 0.3
+            
+            combined_sentences = []
+            
+            # Take weighted selection from both
+            num_ext = max(1, int(len(ext_sentences) * (1 - weight_abs)))
+            num_abs = max(1, int(len(abs_sentences) * weight_abs))
+            
+            combined_sentences.extend(ext_sentences[:num_ext])
+            combined_sentences.extend(abs_sentences[:num_abs])
+            
+            return ' '.join(combined_sentences)
