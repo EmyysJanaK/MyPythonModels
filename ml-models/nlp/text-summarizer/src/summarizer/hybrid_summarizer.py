@@ -329,3 +329,7 @@ class HybridSummarizer:
         orig_words = len(nltk.word_tokenize(original_text))
         orig_sentences = len(nltk.sent_tokenize(original_text))
         orig_chars = len(original_text)
+
+        summ_words = len(nltk.word_tokenize(summary))
+        summ_sentences = len(nltk.sent_tokenize(summary))
+        summ_chars = len(summary)
