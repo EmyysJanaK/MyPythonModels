@@ -323,3 +323,9 @@ class HybridSummarizer:
         results['hybrid'] = hybrid_result.get('final_summary', 'Error in hybrid summarization')
         
         return results
+
+    def get_summary_statistics(self, original_text: str, summary: str) -> Dict[str, float]:
+        """Calculate statistics comparing original text and summary."""
+        orig_words = len(nltk.word_tokenize(original_text))
+        orig_sentences = len(nltk.sent_tokenize(original_text))
+        orig_chars = len(original_text)
