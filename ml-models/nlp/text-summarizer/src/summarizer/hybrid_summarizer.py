@@ -333,3 +333,17 @@ class HybridSummarizer:
         summ_words = len(nltk.word_tokenize(summary))
         summ_sentences = len(nltk.sent_tokenize(summary))
         summ_chars = len(summary)
+
+        compression_ratio = summ_words / orig_words if orig_words > 0 else 0
+        stats = {
+            'original_word_count': orig_words,
+            'original_sentence_count': orig_sentences,
+            'original_char_count': orig_chars,
+            'summary_word_count': summ_words,
+            'summary_sentence_count': summ_sentences,
+            'summary_char_count': summ_chars,
+            'compression_ratio': compression_ratio,
+            'word_reduction': orig_words - summ_words,
+            'sentence_reduction': orig_sentences - summ_sentences
+        }
+        return stats
