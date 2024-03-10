@@ -347,3 +347,38 @@ class HybridSummarizer:
             'sentence_reduction': orig_sentences - summ_sentences
         }
         return stats
+    
+    def summarize_text(self, text: str, **kwargs) -> Dict[str, Union[str, Dict]]:
+        """
+        High-level method to summarize text using the hybrid approach.
+        
+        Args:
+            text: Input text to summarize
+            **kwargs: Additional parameters for summarization
+            
+        Returns:
+
+            Dictionary with summary and metadata
+        """
+        if not text or not text.strip():
+            raise ValueError("Input text cannot be empty")
+        
+        # Default parameters
+        approach = kwargs.get('approach', 'auto')
+        summary_ratio = kwargs.get('summary_ratio', 0.3)
+        max_length = kwargs.get('max_length', 150)
+        min_length = kwargs.get('min_length', 30)
+        extractive_algorithm = kwargs.get('extractive_algorithm', 'hybrid')
+        abstractive_style = kwargs.get('abstractive_style', 'balanced')
+        combine_method = kwargs.get('combine_method', 'weighted')
+        
+        return self.summarize(
+            text,
+            approach=approach,
+            summary_ratio=summary_ratio,
+            max_length=max_length,
+            min_length=min_length,
+            extractive_algorithm=extractive_algorithm,
+            abstractive_style=abstractive_style,
+            combine_method=combine_method
+        )
