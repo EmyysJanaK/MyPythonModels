@@ -83,21 +83,7 @@ class TextSummarizerCLI:
         print(f"Processing time:   {processing_time:.2f} seconds")
         print("="*50)
     
-    def extractive_summarize(self, args):
-        """Perform extractive summarization."""
-        if 'extractive' not in self.summarizers:
-            raise ValueError("Extractive summarizer not available")
-        
-        summarizer = self.summarizers['extractive']
-        
-        summary = summarizer.summarize(
-            args.text,
-            summary_ratio=args.ratio,
-            max_sentences=args.max_sentences,
-            algorithm=args.algorithm
-        )
-        
-        return summary
+    
     
     def abstractive_summarize(self, args):
         """Perform abstractive summarization."""
@@ -113,7 +99,7 @@ class TextSummarizerCLI:
             summary_style=args.style
         )
         
-        return summary
+        return summary   
     
     def hybrid_summarize(self, args):
         """Perform hybrid summarization."""
