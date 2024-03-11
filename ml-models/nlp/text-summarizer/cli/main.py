@@ -115,7 +115,28 @@ class TextSummarizerCLI:
         
         return summary
     
-
+    def hybrid_summarize(self, args):
+        """Perform hybrid summarization."""
+        if 'hybrid' not in self.summarizers:
+            raise ValueError("Hybrid summarizer not available")
+        
+        summarizer = self.summarizers['hybrid']
+        
+        result = summarizer.summarize(
+            args.text,
+            approach=args.approach,
+            summary_ratio=args.ratio,
+            max_length=args.max_length,
+            min_length=args.min_length
+        )
+        
+        if args.verbose:
+            print(f"\nRecommended approach: {result['recommended_approach']}")
+            print(f"Confidence: {result['confidence']:.2f}")
+            print(f"Reasoning: {result['reasoning']}")
+            print(f"Method used: {result['method_used']}")
+        
+        return result['final_summary']
     
     def compare_methods(self, args):
         """Compare different summarization methods."""
